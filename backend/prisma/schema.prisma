@@ -7,9 +7,90 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// Placeholder model so `prisma migrate dev` produces an initial migration.
-// Replace with real domain models (User, Society, Problem) in the next iteration.
-model HealthPing {
-  id        Int      @id @default(autoincrement())
+enum Role {
+  ADMIN
+  RESIDENT
+}
+
+enum TicketCategory {
+  ELEVATOR
+  PLUMBING
+  ELECTRICAL
+  SECURITY
+  CLEANLINESS
+  PARKING
+  OTHER
+}
+
+enum TicketPriority {
+  LOW
+  MEDIUM
+  HIGH
+  URGENT
+}
+
+enum TicketStatus {
+  OPEN
+  IN_PROGRESS
+  RESOLVED
+  CLOSED
+}
+
+model Society {
+  id        String   @id @default(cuid())
+  name      String
+  slug      String   @unique
+  joinCode  String   @unique
+  address   String?
   createdAt DateTime @default(now())
+
+  members SocietyMember[]
+  tickets Ticket[]
+}
+
+model User {
+  id        String   @id @default(cuid())
+  phone     String   @unique
+  name      String
+  createdAt DateTime @default(now())
+
+  members SocietyMember[]
+  tickets Ticket[]        @relation("TicketCreator")
+}
+
+model SocietyMember {
+  id         String   @id @default(cuid())
+  userId     String
+  societyId  String
+  role       Role
+  flatNumber String?
+  createdAt  DateTime @default(now())
+
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  society Society @relation(fields: [societyId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, societyId])
+  @@index([societyId, role])
+}
+
+model Ticket {
+  id           String         @id @default(cuid())
+  societyId    String
+  createdById  String
+  title        String
+  description  String
+  category     TicketCategory
+  priority     TicketPriority @default(MEDIUM)
+  status       TicketStatus   @default(OPEN)
+  location     String?
+  assignedTo   String?
+  internalNote String?
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+
+  society   Society @relation(fields: [societyId], references: [id], onDelete: Cascade)
+  createdBy User    @relation("TicketCreator", fields: [createdById], references: [id])
+
+  @@index([societyId, status])
+  @@index([createdById])
 }
