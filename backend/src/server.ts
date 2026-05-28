@@ -6,7 +6,7 @@ const server = app.listen(config.port, () => {
   console.log(`[server] listening on http://localhost:${config.port} (${config.nodeEnv})`);
 });
 
-const shutdown = async (signal) => {
+const shutdown = async (signal: NodeJS.Signals): Promise<void> => {
   console.log(`[server] received ${signal}, shutting down`);
   server.close(async () => {
     try {
@@ -18,5 +18,9 @@ const shutdown = async (signal) => {
   });
 };
 
-process.on('SIGINT', () => shutdown('SIGINT'));
-process.on('SIGTERM', () => shutdown('SIGTERM'));
+process.on('SIGINT', () => {
+  void shutdown('SIGINT');
+});
+process.on('SIGTERM', () => {
+  void shutdown('SIGTERM');
+});

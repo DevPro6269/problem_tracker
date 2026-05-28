@@ -1,8 +1,16 @@
+import type { Request, Response } from 'express';
 import prisma from '../db/prisma.js';
 import asyncHandler from '../utils/asyncHandler.js';
 
-export const getHealth = asyncHandler(async (req, res) => {
-  const payload = {
+interface HealthPayload {
+  status: 'ok' | 'degraded';
+  uptime: number;
+  timestamp: string;
+  db: 'connected' | 'disconnected';
+}
+
+export const getHealth = asyncHandler(async (_req: Request, res: Response) => {
+  const payload: HealthPayload = {
     status: 'ok',
     uptime: process.uptime(),
     timestamp: new Date().toISOString(),
@@ -11,7 +19,7 @@ export const getHealth = asyncHandler(async (req, res) => {
 
   try {
     await prisma.$queryRaw`SELECT 1`;
-  } catch (err) {
+  } catch {
     payload.status = 'degraded';
     payload.db = 'disconnected';
     return res.status(503).json(payload);

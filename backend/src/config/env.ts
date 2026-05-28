@@ -6,9 +6,13 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 dotenv.config({ path: path.resolve(__dirname, '../../.env') });
 
-const REQUIRED = ['PORT', 'NODE_ENV', 'DATABASE_URL', 'CORS_ORIGIN'];
+const REQUIRED = ['PORT', 'NODE_ENV', 'DATABASE_URL', 'CORS_ORIGIN'] as const;
 
-const missing = REQUIRED.filter((key) => !process.env[key] || process.env[key].trim() === '');
+const missing = REQUIRED.filter((key) => {
+  const value = process.env[key];
+  return !value || value.trim() === '';
+});
+
 if (missing.length > 0) {
   throw new Error(
     `Missing required environment variables: ${missing.join(', ')}. ` +
@@ -16,16 +20,24 @@ if (missing.length > 0) {
   );
 }
 
-const port = Number.parseInt(process.env.PORT, 10);
+const port = Number.parseInt(process.env.PORT as string, 10);
 if (Number.isNaN(port)) {
   throw new Error(`PORT must be a number, got "${process.env.PORT}"`);
 }
 
-export const config = {
+export interface AppConfig {
+  port: number;
+  nodeEnv: string;
+  databaseUrl: string;
+  corsOrigin: string;
+  isProduction: boolean;
+}
+
+export const config: AppConfig = {
   port,
-  nodeEnv: process.env.NODE_ENV,
-  databaseUrl: process.env.DATABASE_URL,
-  corsOrigin: process.env.CORS_ORIGIN,
+  nodeEnv: process.env.NODE_ENV as string,
+  databaseUrl: process.env.DATABASE_URL as string,
+  corsOrigin: process.env.CORS_ORIGIN as string,
   isProduction: process.env.NODE_ENV === 'production',
 };
 
