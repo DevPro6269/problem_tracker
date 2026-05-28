@@ -1,0 +1,15 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Placeholder model so `prisma migrate dev` produces an initial migration.
+// Replace with real domain models (User, Society, Problem) in the next iteration.
+model HealthPing {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+}
