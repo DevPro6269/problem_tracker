@@ -17,13 +17,27 @@ export function getToken(): string | null {
 
 export function getUser(): SessionUser | null {
   if (typeof window === 'undefined') return null;
-  const raw = window.localStorage.getItem(USER_KEY);
+  const raw = getUserSnapshot();
   if (!raw) return null;
   try {
     return JSON.parse(raw) as SessionUser;
   } catch {
     return null;
   }
+}
+
+export function parseUserSnapshot(raw: string | null): SessionUser | null {
+  if (!raw) return null;
+  try {
+    return JSON.parse(raw) as SessionUser;
+  } catch {
+    return null;
+  }
+}
+
+export function getUserSnapshot(): string | null {
+  if (typeof window === 'undefined') return null;
+  return window.localStorage.getItem(USER_KEY);
 }
 
 export function clearSession(): void {

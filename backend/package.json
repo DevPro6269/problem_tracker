@@ -17,6 +17,7 @@
   },
   "license": "ISC",
   "dependencies": {
+    "@google/adk": "^1.1.0",
     "@prisma/client": "^6.19.3",
     "cors": "^2.8.6",
     "dotenv": "^17.4.2",

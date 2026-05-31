@@ -1,5 +1,14 @@
 export type Role = 'ADMIN' | 'RESIDENT';
 
+export type SocietyInfo = {
+  id: string;
+  name: string;
+  slug: string;
+  address: string | null;
+  createdAt: string;
+  joinCode?: string;
+};
+
 export type Membership = {
   societyId: string;
   slug: string;
