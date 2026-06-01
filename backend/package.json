@@ -4,15 +4,20 @@
   "private": true,
   "description": "Backend API for the Society Problem Tracker assignment",
   "type": "module",
+  "engines": {
+    "node": "20.x"
+  },
   "main": "src/server.ts",
   "scripts": {
     "dev": "tsx watch src/server.ts",
-    "start": "tsx src/server.ts",
+    "start": "node dist/server.js",
+    "build": "prisma generate && tsc -p tsconfig.build.json",
     "test": "NODE_ENV=test vitest run",
     "test:watch": "NODE_ENV=test vitest",
     "typecheck": "tsc --noEmit",
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
+    "prisma:deploy": "prisma migrate deploy",
     "prisma:studio": "prisma studio"
   },
   "license": "ISC",
