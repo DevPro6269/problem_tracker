@@ -44,7 +44,8 @@ export default function Chat() {
       if (data.createdTicketId) qc.invalidateQueries({ queryKey: ['tickets', slug] });
     },
     onError: (e) => {
-      setMessages((m) => [...m, { role: 'error', text: (e as Error).message }]);
+      const message = `${(e as Error).message}\n\nNote: If this API error happened while creating a ticket, the AI API limit may have been exceeded. You can try again later or use the form instead.`;
+      setMessages((m) => [...m, { role: 'error', text: message }]);
     },
   });
 
@@ -80,6 +81,10 @@ export default function Chat() {
           Prefer a form? →
         </Link>
       </div>
+      <p className="rounded-md border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-800">
+        Note: If you get an API error while creating a ticket, the AI API limit may have
+        been exceeded. You can try again later or use the form.
+      </p>
 
       <div
         ref={scrollRef}
