@@ -9,9 +9,9 @@
   },
   "main": "src/server.ts",
   "scripts": {
-    "dev": "tsx watch src/server.ts",
-    "start": "node dist/server.js",
-    "build": "prisma generate && tsc -p tsconfig.build.json",
+    "dev": "node api.js && tsx watch src/server.ts",
+    "start": "node api.js && node dist/server.js",
+    "build": "node api.js && prisma generate && tsc -p tsconfig.build.json",
     "test": "NODE_ENV=test vitest run",
     "test:watch": "NODE_ENV=test vitest",
     "typecheck": "tsc --noEmit",
